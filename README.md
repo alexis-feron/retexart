@@ -15,30 +15,27 @@
 
 ## Résumé du projet
 
-Le projet **retexart** repose sur une application de traitement d'images. Grâce à un algorithme performant, il permet de détecter les différentes zones d'une image et de les retexturer en appliquant une texture spécifiée par l'utilisateur. 
-
-Les fonctionnalités principales incluent :
-- **Segmentation intelligente** : identification automatique des différentes zones d'une image.
-- **Gestion des textures** : possibilité de charger des textures personnalisées pour un rendu unique.
-- **Précision et rapidité** : traitement optimisé pour un rendu fidèle et rapide.
+Le projet **retexart** repose sur une application de traitement d'images. Grâce à un algorithme, il permet de détecter les différentes zones d'une image et de les retexturer en appliquant une texture spécifiée par l'utilisateur. 
 
 ---
 
 ## Fonctionnalités principales
 
-1. **Chargement des images** : Importez facilement une image depuis votre appareil.
+1. **Chargement des images** : Importez vos images.
 2. **Détection des zones** : L'outil segmente automatiquement les zones pertinentes de l'image.
 3. **Application des textures** : Choisissez une texture depuis la bibliothèque intégrée ou importez la vôtre.
-4. **Ajustements personnalisés** : Modifiez les paramètres comme l'échelle, l'orientation ou la transparence des textures.
+4. **Ajustements personnalisés** : Modifiez les paramètres comme la transparence des textures.
 5. **Exportation** : Enregistrez votre image retexturée dans différents formats (PNG, JPG, etc.).
 
 ---
 
 ## Technologies utilisées
 
-- **Langages** : Python
+- **Langage** : 
+    - Python
 - **Bibliothèques** :
-  - numpy
+    - numpy
+    - ...
 
 ---
 

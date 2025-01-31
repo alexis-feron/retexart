@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from PIL import Image
 
 def generate_rgb_palette():
     """Génère une palette complète de couleurs RGB sous forme de plages HSV avec encore plus de nuances."""
@@ -40,6 +41,8 @@ for color_name, (lower, upper) in colors.items():
     cv2.drawContours(image_filled, contours, -1, color_bgr[color_name], thickness=cv2.FILLED)
 
 # Afficher l'image résultante
-cv2.imshow("Zones de couleur remplies", image_filled)
+output_path = 'output.jpg'
+cv2.imwrite(output_path, image_filled)
+Image.open(output_path).show()
 cv2.waitKey(0)
 cv2.destroyAllWindows()

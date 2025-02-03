@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Génération de Palette RGB</title>
+    <script>
+       async function processImage(event) {
+        
+            event.preventDefault();
+
+            const formData = new FormData(document.getElementById('upload-form'));
+            document.getElementById('status').innerText = "Traitement en cours...";
+
+            try {
+                const response = await fetch('http://127.0.0.1:5000/process', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    document.getElementById('output-image').src = "http://127.0.0.1:5000/output";
+                    document.getElementById('status').innerText = "Traitement terminé !";
+                } else {
+                    document.getElementById('status').innerText = "Erreur: " + result.error;
+                }
+            } catch (error) {
+                document.getElementById('status').innerText = "Erreur de connexion au serveur.";
+            }
+            return false;
+        }
+    </script>
+</head>
+<body>
+    <h2>Génération de Palette RGB avec Texture</h2>
+    <form id="upload-form" onsubmit="processImage(event)">
+        <label for="image">Image originale :</label>
+        <input type="file" id="image" name="image" required><br><br>
+        
+        <label for="texture">Texture :</label>
+        <input type="file" id="texture" name="texture" required><br><br>
+        
+        <button type="submit">Lancer le traitement</button>
+    </form>
+    
+    <p id="status"></p>
+    
+    <h3>Résultat :</h3>
+    <img id="output-image" src="" alt="Image traitée" style="max-width: 100%;">
+</body>
+</html>

@@ -24,11 +24,11 @@ def generate_rgb_palette():
     return colors, color_bgr
 
 # Charger l'image
-image = cv2.imread('original.jpg')
+image = cv2.imread('uploads/original.jpg')
 hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
 # Charger la texture
-texture = cv2.imread('textures/texture-laine.jpg')
+texture = cv2.imread('uploads/texture.jpg')
 
 # Générer la palette complète
 colors, color_bgr = generate_rgb_palette()
@@ -91,8 +91,4 @@ binary_filled = cv2.morphologyEx(binary_filled, cv2.MORPH_CLOSE, np.ones((10, 10
 contours, _ = cv2.findContours(binary_filled, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
 # Sauvegarder et afficher l’image
-output_path = 'output.jpg'
-cv2.imwrite(output_path, image_filled)
-Image.open(output_path).show()
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+cv2.imwrite('output.jpg', image_filled)

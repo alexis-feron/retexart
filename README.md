@@ -35,7 +35,8 @@ Le projet **retexart** repose sur une application de traitement d'images. Grâce
     - Python
 - **Bibliothèques** :
     - numpy
-    - ...
+    - opencv-python
+    - pillow
 
 ---
 
@@ -61,5 +62,5 @@ Assurez-vous d'avoir installé :
 
 3. Lancez le projet :
     ```bash
-    python3 app.py
+    python3 launch.py
     ```

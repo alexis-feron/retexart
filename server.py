@@ -13,7 +13,7 @@ os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 def add_cors_headers(response):
     response.headers["Access-Control-Allow-Origin"] = "*"  # Allow all origins
     response.headers["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
-    response.headers["Access-Control-Allow-Headers"] = "Content-Type"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type, multipart/form-data"
     return response
 
 @app.route("/process", methods=["POST"])
@@ -28,13 +28,15 @@ def process():
         texture.save(texture_path)
 
         # Run the script
-        result = subprocess.run(["python3", "launch.py"], capture_output=True, text=True)
+        result = subprocess.run(["python", "launch.py"], capture_output=True, text=True)
         
         if result.returncode == 0:
             return jsonify({"success": True, "output_url": "/output"}), 200
         else:
+            print(result.stderr)
             return jsonify({"success": False, "error": result.stderr}), 500
     except Exception as e:
+        print(e)
         return jsonify({"success": False, "error": str(e)}), 500
 
 @app.route("/output")

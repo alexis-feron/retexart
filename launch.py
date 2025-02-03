@@ -28,7 +28,7 @@ image = cv2.imread('original.jpg')
 hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
 # Charger la texture
-texture = cv2.imread('texture.png')
+texture = cv2.imread('textures/texture-laine.jpg')
 
 # Générer la palette complète
 colors, color_bgr = generate_rgb_palette()

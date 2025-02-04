@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Retexart</title>
+    <script>
+      async function processImage(event) {
+        event.preventDefault();
+        console.log("Envoi du formulaire...");
+
+        const formData = new FormData(document.getElementById("upload-form"));
+        document.getElementById("status").innerText = "Traitement en cours...";
+
+        try {
+          const response = await fetch("http://127.0.0.1:5000/process", {
+            method: "POST",
+            body: formData,
+          });
+
+          const result = await response.json();
+          if (!result.success) {
+            document.getElementById("status").innerText =
+              "Erreur: " + result.error;
+          }
+          return false;
+        } catch (error) {
+          document.getElementById("status").innerText =
+            "Erreur de connexion au serveur.";
+          return false;
+        }
+      }
+    </script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        text-align: center;
+        padding: 20px;
+      }
+
+      h2 {
+        color: #333;
+      }
+
+      form {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        display: inline-block;
+        text-align: left;
+        max-width: 400px;
+        width: 100%;
+      }
+
+      label {
+        font-weight: bold;
+        display: block;
+        margin-top: 10px;
+      }
+
+      input[type="file"] {
+        margin: 5px 0;
+      }
+
+      button {
+        background-color: #28a745;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 10px;
+        width: 100%;
+      }
+
+      button:hover {
+        background-color: #218838;
+      }
+
+      #status {
+        margin-top: 15px;
+        font-weight: bold;
+        color: #d9534f;
+      }
+
+      h3 {
+        margin-top: 20px;
+      }
+
+      #output-image {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 10px;
+        background: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+      }
+
+      #output-image:hover {
+        background: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Génération d'images avec nouvelle texture</h2>
+    <form id="upload-form" onsubmit="processImage(event); return false;">
+      <label for="image">Image originale :</label>
+      <input type="file" id="image" name="image" required /><br /><br />
+
+      <label for="texture">Texture :</label>
+      <input type="file" id="texture" name="texture" required /><br /><br />
+
+      <button type="submit">Lancer le traitement</button>
+    </form>
+
+    <p id="status"></p>
+
+    <h3>Résultat :</h3>
+    <a href="http://127.0.0.1:5000/output" target="_blank" id="output-image">
+      Voir le résultat
+    </a>
+  </body>
+</html>

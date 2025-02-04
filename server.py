@@ -19,6 +19,8 @@ def add_cors_headers(response):
 @app.route("/process", methods=["POST"])
 def process():
     try:
+        print("Processing request...")
+
         image = request.files["image"]
         texture = request.files["texture"]
         image_path = os.path.join(UPLOAD_FOLDER, "original.jpg")

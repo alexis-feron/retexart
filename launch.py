@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-from PIL import Image
 from tqdm import tqdm
 
 def generate_rgb_palette():
@@ -42,16 +41,15 @@ texture_resized = cv2.resize(texture, (image.shape[1], image.shape[0]))
 
 # Utiliser un masque pour éviter les répétitions dans la boucle
 for color_name, (lower, upper) in tqdm(colors.items(), desc="Traitement des couleurs", total=len(colors)):
-    # Appliquer le masque de couleur une fois
+    # Appliquer le masque de couleur une seule fois
     mask = cv2.inRange(hsv_image, np.array(lower), np.array(upper))
 
     # Éviter le filtrage excessif et réduire le noyau
-    kernel = np.ones((3, 3), np.uint8)  # Réduit la taille du noyau
+    kernel = np.ones((1, 1), np.uint8)  # Réduit la taille du noyau
     mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
     mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
 
-    # Remplacer la recherche de contours par une méthode plus rapide
-    # Utiliser np.where pour obtenir des régions avec des couleurs similaires
+    # Détection des zones correspondant à la couleur
     region = np.where(mask == 255)
 
     if len(region[0]) > 0:  # Si la région n'est pas vide
@@ -67,7 +65,7 @@ for color_name, (lower, upper) in tqdm(colors.items(), desc="Traitement des coul
         texture_moved = np.roll(texture_resized, offset_x, axis=1)
         texture_moved = np.roll(texture_moved, offset_y, axis=0)
 
-        # Convertir la texture en gris et redimensionner
+        # Convertir la texture en niveaux de gris et la coloriser
         texture_gray = cv2.cvtColor(texture_moved, cv2.COLOR_BGR2GRAY)
         texture_gray = cv2.cvtColor(texture_gray, cv2.COLOR_GRAY2BGR)
         
@@ -82,9 +80,23 @@ for color_name, (lower, upper) in tqdm(colors.items(), desc="Traitement des coul
         # Appliquer la texture colorée à la région
         image_filled[region] = texture_colored[region]
 
-# Remplir les trous noirs avec cv2.inpaint
+# Détection du fond pour éviter de remplir les zones noires qui correspondent au fond
+gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+_, background_mask = cv2.threshold(gray, 10, 255, cv2.THRESH_BINARY)
+
+# Trouver les contours des formes
+contours, _ = cv2.findContours(background_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+# Créer un masque des objets détectés
+object_mask = np.zeros_like(background_mask)
+cv2.drawContours(object_mask, contours, -1, 255, thickness=cv2.FILLED)
+
+# Identifier les zones noires dans l'image générée
 mask_black = np.all(image_filled == [0, 0, 0], axis=-1).astype(np.uint8) * 255
-image_filled = cv2.inpaint(image_filled, mask_black, inpaintRadius=3, flags=cv2.INPAINT_TELEA)
+
+# Appliquer l’inpainting uniquement aux zones internes des formes détectées
+mask_black_filtered = cv2.bitwise_and(mask_black, object_mask)
+image_filled = cv2.inpaint(image_filled, mask_black_filtered, inpaintRadius=3, flags=cv2.INPAINT_TELEA)
 
 # Sauvegarder et afficher l’image
 cv2.imwrite('output.jpg', image_filled)

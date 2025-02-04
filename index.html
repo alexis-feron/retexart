@@ -10,6 +10,20 @@
         console.log("Envoi du formulaire...");
 
         const formData = new FormData(document.getElementById("upload-form"));
+        const textureSelect = document.getElementById("texture");
+
+        // Si l'utilisateur choisit une texture depuis la liste, on ajoute son nom au FormData
+        if (textureSelect.value !== "new" && textureSelect.value !== "") {
+          const selectedTexture = textureSelect.value;
+          formData.append("texture_name", selectedTexture); // On envoie le nom de la texture
+        }
+
+        // Si l'utilisateur télécharge une nouvelle texture, on l'ajoute à formData
+        const newTextureFile = document.getElementById("new-texture").files[0];
+        if (newTextureFile) {
+          formData.append("new-texture", newTextureFile);
+        }
+
         document.getElementById("status").innerText = "Traitement en cours...";
 
         try {
@@ -28,14 +42,99 @@
             document.getElementById("status").innerText =
               "Erreur: " + result.error;
           }
-          return false;
         } catch (error) {
           document.getElementById("status").innerText =
             "Erreur de connexion au serveur : " + error;
-          return false;
         }
       }
+
+      // Fonction pour lister les textures par défaut du projet
+      async function loadTextures() {
+        try {
+          const response = await fetch("http://127.0.0.1:5000/textures"); // Appel au backend pour récupérer la liste des textures
+          const textures = await response.json();
+          const textureSelect = document.getElementById("texture");
+
+          // Ajouter les textures existantes à la liste déroulante
+          textures.forEach((texture) => {
+            const option = document.createElement("option");
+            option.value = texture;
+            option.textContent = texture;
+            textureSelect.appendChild(option);
+          });
+        } catch (error) {
+          console.error("Erreur lors de la récupération des textures :", error);
+        }
+      }
+
+      window.onload = loadTextures; // Charger les textures lorsque la page est chargée
     </script>
+    <script>
+      async function processImage(event) {
+        event.preventDefault();
+        console.log("Envoi du formulaire...");
+
+        const formData = new FormData(document.getElementById("upload-form"));
+        const textureSelect = document.getElementById("texture");
+
+        // Si l'utilisateur choisit une texture depuis la liste, on ajoute son nom au FormData
+        if (textureSelect.value !== "new" && textureSelect.value !== "") {
+          const selectedTexture = textureSelect.value;
+          formData.append("texture_name", selectedTexture); // On envoie le nom de la texture
+        }
+
+        // Si l'utilisateur télécharge une nouvelle texture, on l'ajoute à formData
+        const newTextureFile = document.getElementById("new-texture").files[0];
+        if (newTextureFile) {
+          formData.append("new-texture", newTextureFile);
+        }
+
+        document.getElementById("status").innerText = "Traitement en cours...";
+
+        try {
+          const response = await fetch("http://127.0.0.1:5000/process", {
+            method: "POST",
+            body: formData,
+          });
+
+          const result = await response.json();
+          if (result.success) {
+            document.getElementById("output-image").src =
+              "http://127.0.0.1:5000/output";
+            document.getElementById("status").innerText =
+              "Traitement terminé !";
+          } else {
+            document.getElementById("status").innerText =
+              "Erreur: " + result.error;
+          }
+        } catch (error) {
+          document.getElementById("status").innerText =
+            "Erreur de connexion au serveur : " + error;
+        }
+      }
+
+      // Fonction pour lister les textures par défaut du projet
+      async function loadTextures() {
+        try {
+          const response = await fetch("http://127.0.0.1:5000/textures"); // Appel au backend pour récupérer la liste des textures
+          const textures = await response.json();
+          const textureSelect = document.getElementById("texture");
+
+          // Ajouter les textures existantes à la liste déroulante
+          textures.forEach((texture) => {
+            const option = document.createElement("option");
+            option.value = texture;
+            option.textContent = texture;
+            textureSelect.appendChild(option);
+          });
+        } catch (error) {
+          console.error("Erreur lors de la récupération des textures :", error);
+        }
+      }
+
+      window.onload = loadTextures; // Charger les textures lorsque la page est chargée
+    </script>
+
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -67,7 +166,8 @@
         width: 100%;
       }
 
-      input[type="file"] {
+      input[type="file"],
+      select {
         margin: 5px 0;
         width: 100%;
       }
@@ -124,7 +224,16 @@
       <input type="file" id="image" name="image" required /><br /><br />
 
       <label for="texture">Texture :</label>
-      <input type="file" id="texture" name="texture" required /><br /><br />
+      <select id="texture" name="texture" required>
+        <option value="" disabled selected>Choisir une texture</option>
+        <option value="new">Télécharger une nouvelle texture</option>
+      </select>
+      <input
+        type="file"
+        id="new-texture"
+        name="new-texture"
+        style="display: none"
+      /><br /><br />
 
       <button type="submit">Lancer le traitement</button>
     </form>
@@ -138,6 +247,7 @@
         Télécharger l'image
       </button>
     </a>
+
     <script>
       document.getElementById("output-image").onload = function () {
         const downloadLink = document.getElementById("download-link");
@@ -147,6 +257,19 @@
           .querySelector("button")
           .setAttribute("download", "output.png");
       };
+    </script>
+
+    <script>
+      // Afficher l'input file lorsque l'option "Télécharger une nouvelle texture" est sélectionnée
+      document
+        .getElementById("texture")
+        .addEventListener("change", function (event) {
+          if (event.target.value === "new") {
+            document.getElementById("new-texture").style.display = "block";
+          } else {
+            document.getElementById("new-texture").style.display = "none";
+          }
+        });
     </script>
   </body>
 </html>

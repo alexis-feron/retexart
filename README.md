@@ -37,6 +37,8 @@ Le projet **retexart** repose sur une application de traitement d'images. Grâce
     - numpy
     - opencv-python
     - pillow
+    - flask
+    - tdqm
 
 ---
 
@@ -60,7 +62,13 @@ Assurez-vous d'avoir installé :
     pip install -r requirements.txt
     ```
 
-3. Lancez le projet :
+3. 2 versions pour lancer le projet
+- 1. Lancez le projet en important des images (texture.jpg et original.jpg) dans uploads puis on obtiens le résultat (output.jpg) :
     ```bash
     python3 launch.py
+    ```
+
+- 2. Lancez le projet en version web : lancer le serveur et ouvrez index.html dans un navigateur :
+    ```bash
+    python3 server.py
     ```

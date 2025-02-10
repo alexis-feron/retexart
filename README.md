@@ -36,7 +36,7 @@ Le projet **retexart** repose sur une application de traitement d'images. Grâce
 - **Bibliothèques** :
     - numpy
     - opencv-python
-    - pillow
+    - pytest
     - flask
     - tdqm
 
@@ -71,4 +71,9 @@ Assurez-vous d'avoir installé :
 - 2. Lancez le projet en version web : lancer le serveur et ouvrez index.html dans un navigateur :
     ```bash
     python3 server.py
+    ```
+    
+4. Lancer les tests :
+    ```bash
+    pytest test.py
     ```
